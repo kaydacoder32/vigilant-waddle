@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Climb & Mine</title>
+  <style>
+    :root { --bg:#101827; --panel:#18263b; --panel2:#223552; --text:#edf5ff; --muted:#9db0ca; --accent:#62e6a8; --gold:#ffd166; --danger:#ff7096; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--text); font:16px system-ui, sans-serif; background:radial-gradient(circle at top,#29446b 0,#101827 55%); }
+    .wrap { width:min(1050px,94%); margin:auto; padding:24px 0 42px; }
+    header { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:18px; }
+    h1 { margin:0; font-size:clamp(28px,5vw,46px); } h1 span { color:var(--accent); }
+    .subtitle { color:var(--muted); margin:4px 0 0; }
+    .grid { display:grid; grid-template-columns:1.35fr .9fr; gap:18px; }
+    .panel { background:rgba(24,38,59,.94); border:1px solid #385075; border-radius:18px; padding:18px; box-shadow:0 12px 30px #07101f66; }
+    .stats { display:grid; grid-template-columns:repeat(4,1fr); gap:9px; margin-bottom:16px; }
+    .stat { background:var(--panel2); border-radius:12px; padding:10px; text-align:center; } .stat b { display:block; font-size:22px; color:var(--accent); } .stat small { color:var(--muted); }
+    .mountain { min-height:325px; border-radius:16px; padding:20px; position:relative; overflow:hidden; background:linear-gradient(#72c5ed 0 22%,#bbebfa 22% 28%,#537ca2 28% 100%); }
+    .mountain:after { content:""; position:absolute; inset:28% 0 0; background:linear-gradient(135deg,transparent 0 31%,#385b77 31% 52%,transparent 52%),linear-gradient(35deg,transparent 0 45%,#294861 45% 65%,transparent 65%); opacity:.9; }
+    .mountain-content { position:relative; z-index:1; display:flex; height:275px; flex-direction:column; justify-content:space-between; align-items:center; }
+    .player { font-size:42px; filter:drop-shadow(0 3px 1px #172b3b); transition:transform .35s; } .player.bump { transform:translateY(-13px) scale(1.08); }
+    .goal { background:#172a43dd; border:1px solid #ffffff44; padding:8px 14px; border-radius:999px; }
+    .progress { height:14px; background:#0b1524aa; border-radius:99px; overflow:hidden; margin:14px 0 8px; } .progress i { display:block; height:100%; width:0; background:linear-gradient(90deg,var(--accent),#4cb8ff); transition:width .25s; }
+    button { border:0; border-radius:11px; padding:11px 14px; color:#08151b; font-weight:800; cursor:pointer; background:var(--accent); } button:hover { filter:brightness(1.1); transform:translateY(-1px); } button:disabled { opacity:.45; cursor:not-allowed; transform:none; } .secondary { background:#8eb3db; } .gold { background:var(--gold); } .danger { background:var(--danger); }
+    .actions { display:flex; gap:10px; flex-wrap:wrap; } .actions button { flex:1; min-width:140px; }
+    h2 { font-size:19px; margin:0 0 12px; } .side-section + .side-section { margin-top:20px; padding-top:18px; border-top:1px solid #385075; }
+    .item { display:flex; justify-content:space-between; align-items:center; gap:12px; padding:11px 0; border-bottom:1px solid #ffffff12; } .item:last-child { border-bottom:0; } .item p { margin:0; } .item small { display:block; color:var(--muted); margin-top:3px; }
+    #log { min-height:44px; margin-top:13px; color:var(--muted); } .notice { color:var(--gold); }
+    footer { color:var(--muted); text-align:center; margin-top:18px; font-size:13px; }
+    @media (max-width:760px) { .grid { grid-template-columns:1fr; } .stats { grid-template-columns:repeat(2,1fr); } header { align-items:flex-start; flex-direction:column; } }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <header><div><h1>⛏️ <span>Climb & Mine</span></h1><p class="subtitle">A tiny playable version of your imported game save.</p></div><button class="secondary" id="reset">Reset save</button></header>
+    <div class="grid">
+      <section class="panel">
+        <div class="stats">
+          <div class="stat"><b id="coins">0</b><small>Coins</small></div><div class="stat"><b id="wins">1</b><small>Wins</small></div><div class="stat"><b id="level">2</b><small>Player level</small></div><div class="stat"><b id="speed">0</b><small>Speed</small></div>
+        </div>
+        <div class="mountain"><div class="mountain-content"><div class="goal">🏁 Summit <span id="summit">1</span></div><div class="player" id="player">🧗</div><div><strong>Reach the summit to earn coins.</strong><div class="progress"><i id="bar"></i></div><small id="distance">0 / 100 m</small></div></div></div>
+        <div class="actions" style="margin-top:15px"><button id="climb">Climb</button><button class="gold" id="mine">Mine for coins</button><button class="secondary" id="save">Save game</button></div>
+        <div id="log">Your save was imported. Start climbing!</div>
+      </section>
+      <aside class="panel">
+        <div class="side-section"><h2>🛒 Shop</h2>
+          <div class="item"><p><b>Training boots</b><small>+2 climbing speed</small></p><button class="buy" data-cost="10" data-kind="speed">10 🪙</button></div>
+          <div class="item"><p><b>Lucky pickaxe</b><small>+5 coins when mining</small></p><button class="buy" data-cost="25" data-kind="pickaxe">25 🪙</button></div>
+          <div class="item"><p><b>Coin magnet</b><small>+10 coins when winning</small></p><button class="buy" data-cost="50" data-kind="magnet">50 🪙</button></div>
+        </div>
+        <div class="side-section"><h2>🔥 Rebirth</h2><p style="color:var(--muted)">Reset your climb for a permanent speed bonus.</p><button id="rebirth" class="danger">Rebirth (need 5 wins)</button></div>
+        <div class="side-section"><h2>💾 Save data</h2><p style="color:var(--muted)">Progress is stored in this browser automatically.</p><button id="export" class="secondary">Export JSON</button><label class="secondary" style="display:inline-block;padding:11px 14px;border-radius:11px;font-weight:800;cursor:pointer">Import JSON<input id="import" type="file" accept="application/json" hidden></label></div>
+      </aside>
+    </div>
+    <footer>Standalone HTML — no libraries, server, or internet connection required.</footer>
+  </main>
+<script>
+  const initial = { coins:0, wins:1, level:2, xp:36, speed:0, summit:1, distance:0, rebirths:0, pickaxe:false, magnet:false };
+  let state = {...initial, ...JSON.parse(localStorage.getItem('climbMineSave') || '{}')};
+  const $ = id => document.getElementById(id);
+  function write(message, notice=false) { $('log').textContent=message; $('log').className=notice?'notice':''; }
+  function persist() { localStorage.setItem('climbMineSave', JSON.stringify(state)); render(); }
+  function render() {
+    $('coins').textContent=state.coins; $('wins').textContent=state.wins; $('level').textContent=state.level; $('speed').textContent=state.speed;
+    $('summit').textContent=state.summit; $('bar').style.width=state.distance+'%'; $('distance').textContent=Math.round(state.distance)+' / 100 m';
+    document.querySelectorAll('.buy').forEach(b=>{ const owned=state[b.dataset.kind]; b.disabled=owned || state.coins < +b.dataset.cost; b.textContent=owned?'Owned':b.dataset.cost+' 🪙'; });
+    $('rebirth').disabled=state.wins<5; $('player').textContent=state.pickaxe?'⛏️':'🧗';
+  }
+  $('climb').onclick=()=>{ const gain=10+state.speed*2+state.rebirths*2; state.distance=Math.min(100,state.distance+gain); $('player').classList.add('bump'); setTimeout(()=>$('player').classList.remove('bump'),350); if(state.distance>=100){ state.distance=0; state.summit++; state.wins++; state.level=Math.max(state.level,Math.floor(state.wins/2)+1); state.xp+=25; state.coins+=20+(state.magnet?10:0); write('🏆 Summit reached! You earned '+(state.magnet?30:20)+' coins.',true); } else write('You climbed '+gain+' metres.'); persist(); };
+  $('mine').onclick=()=>{ const gain=5+(state.pickaxe?5:0); state.coins+=gain; state.xp+=3; write('⛏️ You mined '+gain+' coins.'); persist(); };
+  document.querySelectorAll('.buy').forEach(b=>b.onclick=()=>{ if(state.coins>=+b.dataset.cost&&!state[b.dataset.kind]){state.coins-=+b.dataset.cost;state[b.dataset.kind]=true;if(b.dataset.kind==='speed')state.speed+=2;write('Purchased '+b.previousElementSibling.querySelector('b').textContent+'!');persist();} });
+  $('rebirth').onclick=()=>{if(state.wins>=5){state.rebirths++;state.speed+=3;state.wins=0;state.summit=1;state.distance=0;write('🔥 Rebirth complete! Permanent speed bonus gained.',true);persist();}};
+  $('reset').onclick=()=>{if(confirm('Reset all local progress?')){state={...initial};persist();write('Save reset.');}};
+  $('save').onclick=()=>{persist();write('Game saved locally.',true);};
+  $('export').onclick=()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='climb-mine-save.json';a.click();URL.revokeObjectURL(a.href);};
+  $('import').onchange=e=>{const file=e.target.files[0];if(!file)return;const reader=new FileReader();reader.onload=()=>{try{state={...initial,...JSON.parse(reader.result)};persist();write('Save imported!',true);}catch{write('That file is not valid save JSON.');}};reader.readAsText(file);};
+  render();
+</script>
+</body>
+</html>
