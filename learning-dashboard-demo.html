@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A fictional, local-only student learning dashboard mockup.">
+  <title>BrightPath Learning — Dashboard Demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #19304a;
+      --muted: #64758a;
+      --blue: #2876c7;
+      --blue-dark: #17599f;
+      --sky: #eaf5ff;
+      --line: #e4ebf2;
+      --surface: #fff;
+      --page: #f5f8fc;
+      --green: #2f9b72;
+      --orange: #e79a37;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; color: var(--ink); background: var(--page); }
+    button { font: inherit; }
+    .topbar { height: 72px; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 0 clamp(18px, 5vw, 72px); background: var(--surface); border-bottom: 1px solid var(--line); }
+    .brand { display: flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; font-weight: 800; letter-spacing: -.03em; }
+    .brand-mark { display: grid; place-items: center; width: 39px; height: 39px; color: white; background: var(--blue); border-radius: 12px; font-size: 22px; }
+    .brand-name { font-size: 18px; }
+    .top-actions { display: flex; align-items: center; gap: 18px; color: var(--muted); }
+    .icon-button { border: 0; background: transparent; color: inherit; padding: 8px; cursor: pointer; font-size: 18px; }
+    .student { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 650; color: var(--ink); }
+    .avatar { display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; color: #15568e; background: #dcefff; font-weight: 800; }
+    .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); max-width: 1440px; margin: auto; min-height: calc(100vh - 72px); }
+    aside { padding: 30px 16px; border-right: 1px solid var(--line); background: #fff; }
+    .nav-label { margin: 0 12px 12px; color: #8795a7; text-transform: uppercase; letter-spacing: .1em; font-size: 10px; font-weight: 800; }
+    .nav-link { display: flex; align-items: center; gap: 12px; margin: 4px 0; padding: 12px; border-radius: 10px; color: #53677d; text-decoration: none; font-size: 14px; font-weight: 650; }
+    .nav-link.active { color: var(--blue-dark); background: var(--sky); }
+    .nav-icon { width: 20px; text-align: center; font-size: 17px; }
+    main { padding: clamp(24px, 4vw, 50px); min-width: 0; }
+    .welcome { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 27px; }
+    h1 { margin: 0 0 7px; font-size: clamp(25px, 3vw, 34px); letter-spacing: -.045em; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 15px; }
+    .date { color: var(--muted); font-size: 13px; white-space: nowrap; }
+    .banner { display: flex; align-items: center; justify-content: space-between; gap: 22px; overflow: hidden; min-height: 155px; margin-bottom: 24px; padding: 26px 30px; border-radius: 17px; color: #164b78; background: linear-gradient(110deg, #dff2ff, #f1f8ff 68%, #e9f4ff); }
+    .banner h2 { margin: 0 0 7px; font-size: 21px; }
+    .banner p { margin: 0; max-width: 570px; color: #526e87; line-height: 1.55; }
+    .banner-art { font-size: 65px; padding: 0 16px; }
+    .section-heading { display: flex; align-items: center; justify-content: space-between; margin: 28px 0 14px; }
+    .section-heading h2 { margin: 0; font-size: 18px; letter-spacing: -.02em; }
+    .section-heading a { color: var(--blue-dark); text-decoration: none; font-size: 13px; font-weight: 700; }
+    .cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .card { padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 3px 12px #203b5708; }
+    .subject-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .subject-icon { display: grid; place-items: center; width: 42px; height: 42px; border-radius: 12px; background: #edf5ff; font-size: 21px; }
+    .tag { padding: 5px 8px; border-radius: 20px; color: #2876c7; background: #edf6ff; font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; }
+    .card h3 { margin: 17px 0 5px; font-size: 16px; }
+    .card p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.5; }
+    .progress-row { display: flex; justify-content: space-between; margin: 17px 0 8px; color: var(--muted); font-size: 11px; }
+    .progress { height: 7px; overflow: hidden; border-radius: 9px; background: #edf1f5; }
+    .progress span { display: block; height: 100%; border-radius: inherit; background: var(--green); }
+    .card-button { width: 100%; margin-top: 17px; padding: 10px; border: 1px solid #d6e5f3; border-radius: 9px; color: var(--blue-dark); background: white; cursor: pointer; font-weight: 750; font-size: 13px; }
+    .card-button:hover { background: #f3f9ff; }
+    .lower-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(220px, .8fr); gap: 16px; }
+    .assignment { display: flex; align-items: center; gap: 13px; padding: 14px 0; border-top: 1px solid var(--line); }
+    .assignment:first-of-type { border-top: 0; }
+    .assignment-icon { display: grid; place-items: center; flex: 0 0 38px; width: 38px; height: 38px; border-radius: 11px; background: #fff5e8; }
+    .assignment strong { display: block; margin-bottom: 4px; font-size: 13px; }
+    .assignment small { color: var(--muted); font-size: 11px; }
+    .due { margin-left: auto; color: #a76814; white-space: nowrap; font-size: 11px; font-weight: 750; }
+    .streak { display: flex; align-items: center; gap: 14px; }
+    .streak-emoji { font-size: 36px; }
+    .streak strong { display: block; font-size: 23px; }
+    .streak span { color: var(--muted); font-size: 12px; }
+    .note { margin-top: 18px; padding: 12px; border-radius: 9px; color: #566d82; background: #f5f8fb; font-size: 11px; line-height: 1.55; }
+    #toast { position: fixed; bottom: 20px; left: 50%; transform: translate(-50%, 20px); opacity: 0; padding: 11px 16px; border-radius: 10px; color: white; background: #19304a; box-shadow: 0 5px 20px #0002; transition: .2s ease; pointer-events: none; font-size: 13px; }
+    #toast.show { transform: translate(-50%, 0); opacity: 1; }
+    @media (max-width: 900px) { .layout { grid-template-columns: 72px minmax(0,1fr); } aside { padding: 22px 10px; } .nav-label,.nav-text { display: none; } .nav-link { justify-content: center; padding: 13px 8px; } .nav-icon { font-size: 20px; } .cards { grid-template-columns: repeat(2, minmax(0,1fr)); } }
+    @media (max-width: 620px) { .topbar { height: 62px; padding: 0 15px; } .brand-name { font-size: 15px; } .top-actions { gap: 5px; } .student-name,.date { display: none; } .layout { display: block; min-height: calc(100vh - 62px); } aside { position: sticky; z-index: 2; top: 0; display: flex; justify-content: space-around; padding: 6px; border-right: 0; border-bottom: 1px solid var(--line); } .nav-link { margin: 0; } main { padding: 23px 16px 35px; } .welcome { margin-bottom: 20px; } .banner { min-height: 130px; padding: 20px; } .banner-art { font-size: 45px; padding: 0; } .banner h2 { font-size: 18px; } .banner p { font-size: 13px; } .cards,.lower-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#home" aria-label="BrightPath Learning demo home"><span class="brand-mark" aria-hidden="true">✦</span><span class="brand-name">BrightPath <span style="color:var(--blue)">Learning</span></span></a>
+    <div class="top-actions">
+      <button class="icon-button" type="button" aria-label="Notifications" data-demo>♧</button>
+      <div class="student"><span class="avatar" aria-hidden="true">JS</span><span class="student-name">Jordan Student</span></div>
+    </div>
+  </header>
+  <div class="layout" id="home">
+    <aside aria-label="Main navigation">
+      <p class="nav-label">Workspace</p>
+      <a class="nav-link active" href="#home"><span class="nav-icon" aria-hidden="true">⌂</span><span class="nav-text">Dashboard</span></a>
+      <a class="nav-link" href="#subjects"><span class="nav-icon" aria-hidden="true">▤</span><span class="nav-text">My subjects</span></a>
+      <a class="nav-link" href="#assignments"><span class="nav-icon" aria-hidden="true">✓</span><span class="nav-text">Assignments</span></a>
+      <a class="nav-link" href="#progress"><span class="nav-icon" aria-hidden="true">▥</span><span class="nav-text">My progress</span></a>
+    </aside>
+    <main>
+      <section class="welcome" aria-labelledby="greeting">
+        <div><h1 id="greeting">Welcome back, Jordan!</h1><p class="subtitle">Ready to keep learning? Pick up where you left off.</p></div>
+        <span class="date">Your learning space · Demo</span>
+      </section>
+      <section class="banner" aria-label="Learning tip">
+        <div><h2>Every day is a chance to grow 🌱</h2><p>Small steps add up. Continue a lesson or explore a subject to keep your learning streak going.</p></div>
+        <div class="banner-art" aria-hidden="true">📚</div>
+      </section>
+      <section id="subjects" aria-labelledby="subjects-title">
+        <div class="section-heading"><h2 id="subjects-title">Continue learning</h2><a href="#subjects">View subjects →</a></div>
+        <div class="cards">
+          <article class="card">
+            <div class="subject-top"><span class="subject-icon" aria-hidden="true">➗</span><span class="tag">Math</span></div>
+            <h3>Fractions &amp; decimals</h3><p>Practice comparing fractions and finding equivalent values.</p>
+            <div class="progress-row"><span>Lesson progress</span><strong>65%</strong></div><div class="progress" role="progressbar" aria-label="Math lesson progress" aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"><span style="width:65%"></span></div>
+            <button class="card-button" type="button" data-demo>Continue lesson</button>
+          </article>
+          <article class="card">
+            <div class="subject-top"><span class="subject-icon" aria-hidden="true" style="background:#eff9f3">📖</span><span class="tag" style="color:#31805e;background:#edf8f1">Reading</span></div>
+            <h3>Finding the main idea</h3><p>Read a passage and discover what it is mostly about.</p>
+            <div class="progress-row"><span>Lesson progress</span><strong>30%</strong></div><div class="progress" role="progressbar" aria-label="Reading lesson progress" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"><span style="width:30%;background:#55ad7d"></span></div>
+            <button class="card-button" type="button" data-demo>Continue lesson</button>
+          </article>
+          <article class="card">
+            <div class="subject-top"><span class="subject-icon" aria-hidden="true" style="background:#fff5e9">🔬</span><span class="tag" style="color:#a76a1b;background:#fff5e8">Science</span></div>
+            <h3>Explore ecosystems</h3><p>See how living things interact in their environments.</p>
+            <div class="progress-row"><span>Lesson progress</span><strong>0%</strong></div><div class="progress" role="progressbar" aria-label="Science lesson progress" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"><span style="width:0%"></span></div>
+            <button class="card-button" type="button" data-demo>Start lesson</button>
+          </article>
+        </div>
+      </section>
+      <div class="section-heading" id="assignments"><h2>Up next</h2><a href="#assignments">See all →</a></div>
+      <div class="lower-grid">
+        <section class="card" aria-label="Upcoming activities">
+          <div class="assignment"><span class="assignment-icon" aria-hidden="true">✏️</span><div><strong>Fraction practice</strong><small>Math · 8 questions</small></div><span class="due">Today</span></div>
+          <div class="assignment"><span class="assignment-icon" aria-hidden="true" style="background:#eff9f3">📗</span><div><strong>Reading response</strong><small>Reading · Short passage</small></div><span class="due" style="color:#64758a">Tomorrow</span></div>
+        </section>
+        <section class="card" id="progress" aria-labelledby="streak-title">
+          <h2 id="streak-title" style="margin:0 0 16px;font-size:16px">Your learning streak</h2>
+          <div class="streak"><span class="streak-emoji" aria-hidden="true">🔥</span><div><strong>4 days</strong><span>Keep it going!</span></div></div>
+          <div class="note">This is a fictional, standalone dashboard mockup. Buttons and navigation are demonstrations only; no account or student data is collected.</div>
+        </section>
+      </div>
+    </main>
+  </div>
+  <div id="toast" role="status" aria-live="polite">Demo only — no lesson is connected.</div>
+  <script>
+    document.querySelectorAll('[data-demo]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const toast = document.getElementById('toast');
+        toast.classList.add('show');
+        window.clearTimeout(window.demoToastTimer);
+        window.demoToastTimer = window.setTimeout(() => toast.classList.remove('show'), 2200);
+      });
+    });
+  </script>
+</body>
+</html>
